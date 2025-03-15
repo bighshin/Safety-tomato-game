@@ -1,0 +1,3 @@
+window.ENV = {
+  GA_MEASUREMENT_ID: "${GA_MEASUREMENT_ID}"
+};
