@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0, minimum-scale=1.0">
+    <title>🍅安心トマトゲーム🍅</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.17.1/matter.min.js"></script>
+    <script src="script.js" defer></script>
+    <style>
+        @font-face {
+            font-family: 'MisakiGothic';
+            src: url('fonts/misaki_gothic.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        body {
+            background-color: #FFD1DC;  /* 薄いピンク色の背景に変更 */
+            margin: 0; /* デフォルトの余白を削除 */
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* コンテンツを中央揃え */
+        }
+
+        /* 各要素の配置 */
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 280px;
+            margin: 5px 0;
+        }
+
+        /* 左と真ん中の画像枠 */
+        .header-container div {
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        /* 右側の円形コンテナ */
+        #next-fruit-container {
+            border: 2px solid #8B4513;
+            background-color: white;
+            border-style:dotted;
+            border-width:thick;
+            width: 86px;
+            height: 86px;
+            margin-top:-10px
+    
+        }
+
+
+        #title-image {
+            width: 300px;
+            margin-bottom: 5px; /* 下部の余白を設定 */
+        }
+
+        #header-image {
+            width: 300px;
+            margin-top: 0px; /* 上部の余白を設定 */
+        }
+
+        #game-container {
+            position: relative;
+            width: 100vw;
+            max-width: 320px; /* 最大幅を指定 */
+            height: 100vh;
+            max-height: 440px; /* 最大高さを指定 */
+            border: 1px solid #000000;
+            box-sizing: border-box; /* ボーダーを含めたサイズ指定にする */
+            margin: 0 auto; /* ゲームコンテナを中央に配置 */
+        }
+
+        #rules {
+            text-align: center;
+            max-width: 320px; /* ゲームコンテナと同じ幅にする */
+            margin: 20px auto; /* 上下の余白を調整 */
+            padding: 10px;
+            background-color: #ffffff; /* ルール説明欄の背景を白に設定 */
+            border-radius: 5px; /* 角を少し丸くする */
+            box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2); /* 少し影をつけて浮いているように見せる */
+            font-family: 'MisakiGothic', sans-serif; /* 日本語ドットフォントを適用 */
+            font-size: 1em; /* 読みやすいサイズに調整 */
+        }
+
+        #game-over-message {
+            display: none;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+        }
+        #top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 320px;
+            margin-bottom: 10px;
+        }
+
+        .preview-container {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background-color: white;
+            border: 2px solid #8B4513;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'MisakiGothic', sans-serif;
+            color: #8B4513;
+            font-size: 1.2em;
+        }
+
+
+        #next-fruit-image {
+            width: 48px; /* フルーツのプレビューサイズ */
+            height: 48px;
+        }
+
+        .center-image-container {
+            position: relative;
+            display: inline-block; /* 要素のサイズを内容に合わせる */
+
+        }
+        
+        /* 中央の画像を少し左に寄せる */
+        .center-image {
+            margin-right: 70px; /* 少し左に寄せる */
+            margin-top: -50px;
+            border: none; /* 枠線があれば削除 */
+            background: none; /* 背景色があれば削除 */
+ 
+        }
+
+        .face-image {
+            position: absolute;
+            top: -15%; /* 顔画像の位置を吹き出し内で微調整 */
+            left: -25%;
+            width: 40%;
+            height: auto;
+            pointer-events: none;
+            
+        }
+
+        #tomato-counter {
+            text-align: end;
+            font-size: 1.5em;
+            color: #ff6347; /* トマト色 */
+            margin-top: 0px;
+            font-family: 'MisakiGothic', sans-serif; /* 日本語ドットフォントを適用 */
+            font-size: 1.5em; /* 読みやすいサイズに調整 */
+        }
+        #score {
+            text-align: end;
+            font-size: 1.5em;
+            color: #ff6347; /* トマト色 */
+            margin-top: 0px;
+            font-family: 'MisakiGothic', sans-serif; /* 日本語ドットフォントを適用 */
+            font-size: 1.5em; /* 読みやすいサイズに調整 */
+        }
+    </style>
+</head>
+<body>
+    <!-- タイトル画像 -->
+    <h1 id="title-image">
+        <a href="">
+            <img src="img/title3.png" width="300" alt="トマトゲーム">
+        </a>
+    </h1>
+    <!-- ヘッダー画像配置エリア -->
+    <div class="header-container">
+        <img src="img/tanuki.png" alt="tanuki.png" style="width: 90px; ">
+    <!-- 吹き出しと顔画像を重ねるコンテナ -->
+    <div class="center-image-container">
+        <img src="img/fuki.png" alt="fuki" class="center-image" style="width: 64px;">
+        <img id="face-image" src="img/face_1.png" alt="顔画像" class="face-image">
+    </div>
+        <div id="next-fruit-container">
+            <img id="next-fruit-image" src="img/image1.gif" alt="次のフルーツ" style="width: 64px; height: 64px;">
+        </div>
+    </div>
+    <!-- トマトカウンター -->
+    <div id="tomato-counter">🍅のかず: 0</div>
+    <!-- スコア -->
+    <div id="score">とくてん: 0</div>
+    <!-- ゲームコンテナ -->
+    <div id="game-container">
+    </div>
+    <!-- 任意の画像 -->
+    <img id="header-image" src="img/shinka.png" alt="進化">
+    <img id="header-image" src="img/anshin.png" alt="安心度">
+    <!-- ルール説明欄 -->
+    <div id="rules">
+        <h2>ルール</h2>
+        <p>キャラを　しんかさせて</p>
+        <p>スコアを　かせごう</p>
+        <p>🍅の　かずで　🦝の　あんしんどが</p>
+        <p>あがるよ</p>
+        <p>※🍅は　きえません</p>
+        <p>あんしんどが　たかいと　ポイントも　たかい</p>
+        <p>コップ🥛　から　キャラ　が</p>
+        <p>あふれる　と　ゲームオーバー⚠️</p>
+        <p>タイトル　を　おす　と　やりなおし</p>
+    </div>
+
+    <div id="game-over-message">Game Over！</div> 
+    <!-- BGM音楽 -->
+    <audio id="bgm" >
+        <source src="img/bgm.mp3" type="audio/mpeg">   
+    </audio>
+</body>
+</html>
