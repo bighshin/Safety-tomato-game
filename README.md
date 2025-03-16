@@ -1,4 +1,4 @@
-# Safety-tomato-game
+# 安心トマトゲーム(Safety Tomato Game)
 ## 概要
 スイカゲームのように上からキャラクターを落とし、トマトをたくさん作るゲームです。
 ![プレイ画面](./img/play.png)
